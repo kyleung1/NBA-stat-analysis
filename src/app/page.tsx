@@ -1,113 +1,187 @@
-import Image from "next/image";
+"use client";
+import { useEffect, useState } from "react";
+import { Analysis, ReturnObj } from "./api/analysis/[teamId]/route";
+
+const TEAMS = [
+  "atl",
+  "bos",
+  "brk",
+  "chi",
+  "cho",
+  "cle",
+  "dal",
+  "den",
+  "det",
+  "gsw",
+  "hou",
+  "ind",
+  "lac",
+  "lal",
+  "mem",
+  "mia",
+  "mil",
+  "min",
+  "nop",
+  "nyk",
+  "okc",
+  "orl",
+  "phi",
+  "pho",
+  "por",
+  "sac",
+  "sas",
+  "tor",
+  "uta",
+  "was",
+];
 
 export default function Home() {
+  const [team, setTeam] = useState<string>("");
+  const [data, setData] = useState<ReturnObj>();
+  const [features, setFeatures] = useState<string[]>([]);
+  const [teamName, setTN] = useState("");
+
+  useEffect(() => {
+    getTeamNameFull();
+  }, [team]);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const res = await fetch(`/api/analysis/${team}`);
+    const DATA: ReturnObj = await res.json();
+    const temp = [];
+    for (const key in DATA) {
+      temp.push(key);
+    }
+    setData(DATA);
+    setFeatures(temp);
+    return DATA;
+  }
+
+  function getTeamNameFull() {
+    if (team === "atl") {
+      setTN("Atlanta Hawks");
+    } else if (team === "bos") {
+      setTN("Boston Celtics");
+    } else if (team === "brk") {
+      setTN("Brooklyn Nets");
+    } else if (team === "chi") {
+      setTN("Chicago Bulls");
+    } else if (team === "cho") {
+      setTN("Charlotte Hornets");
+    } else if (team === "cle") {
+      setTN("Cleveland Cavaliers");
+    } else if (team === "dal") {
+      setTN("Dallas Mavericks");
+    } else if (team === "den") {
+      setTN("Denver Nuggets");
+    } else if (team === "det") {
+      setTN("Detroit Pistons");
+    } else if (team === "gsw") {
+      setTN("Golden State Warriors");
+    } else if (team === "hou") {
+      setTN("Houston Rockets");
+    } else if (team === "ind") {
+      setTN("Indiana Pacers");
+    } else if (team === "lac") {
+      setTN("Los Angeles Clippers");
+    } else if (team === "lal") {
+      setTN("Los Angeles Lakers");
+    } else if (team === "mem") {
+      setTN("Memphis Grizzlies");
+    } else if (team === "mia") {
+      setTN("Miami Heat");
+    } else if (team === "mil") {
+      setTN("Milwaukee Bucks");
+    } else if (team === "min") {
+      setTN("Minnesota Timberwolves");
+    } else if (team === "nop") {
+      setTN("New Orleans Pelicans");
+    } else if (team === "nyk") {
+      setTN("New York Knicks");
+    } else if (team === "okc") {
+      setTN("Oklahoma City Thunder");
+    } else if (team === "orl") {
+      setTN("Orlando Magic");
+    } else if (team === "phi") {
+      setTN("Philadelphia 76ers");
+    } else if (team === "pho") {
+      setTN("Phoenix Suns");
+    } else if (team === "por") {
+      setTN("Portland Trail Blazers");
+    } else if (team === "sac") {
+      setTN("Sacramento Kings");
+    } else if (team === "sas") {
+      setTN("San Antonio Spurs");
+    } else if (team === "tor") {
+      setTN("Toronto Raptors");
+    } else if (team === "uta") {
+      setTN("Utah Jazz");
+    } else if (team === "was") {
+      setTN("Washington Wizards");
+    }
+  }
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="flex flex-col items-center">
+      <img
+        src="nba.bmp"
+        alt="nba logo"
+        className="border-2 border-red-600"
+      ></img>
+      <h1 className="my-5">NBA 2023-24 season Performance Tracker</h1>
+      <h2>
+        Find the mean, median, and mode statistics of every nba season game of
+        your favorite teams!
+      </h2>
+      <div className="flex flex-wrap justify-center mt-5">
+        {TEAMS.map((item, index) => (
+          <li
+            key={index}
+            className="list-none mx-5 hover:underline cursor-pointer hover:text-red-600"
+            onClick={() => {
+              setTeam(item);
+            }}
           >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+            {item}
+          </li>
+        ))}
+      </div>
+      <form className="my-5" onSubmit={handleSubmit}>
+        <input
+          placeholder="Enter your NBA team team."
+          className="border-2 border-gray"
+          onChange={(event) => {
+            setTeam(event.target.value);
+          }}
+        ></input>
+        <button type="submit" className="border-2 border-black rounded-md ml-5">
+          Submit
+        </button>
+      </form>
+      <h2>{teamName}</h2>
+      {features.map((feature, index) => (
+        <div key={index} className="w-3/4">
+          <div>{feature}</div>
+
+          {data && data[feature as keyof ReturnObj] && (
+            <div className="flex justify-around">
+              <div>
+                <span>Mean: </span>
+                <span>{data[feature as keyof ReturnObj]?.mean}</span>
+              </div>
+              <div>
+                <span>Median: </span>
+                <span>{data[feature as keyof ReturnObj]?.median}</span>
+              </div>
+              <div>
+                <span>Mode: </span>
+                <span>{data[feature as keyof ReturnObj]?.mode}</span>
+              </div>
+            </div>
+          )}
         </div>
-      </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+      ))}
+    </div>
   );
 }
