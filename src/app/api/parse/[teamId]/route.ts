@@ -1,6 +1,17 @@
 import { NextResponse } from "next/server";
-import { parseJSON } from "../route";
 import { HTMLElement } from "../route";
+
+const HTMLParser = require("node-html-parser");
+
+async function parseJSON(team: String) {
+  const response = await fetch(
+    `https://www.basketball-reference.com/teams/${team}/2024/gamelog/`
+  );
+  const text = await response.text();
+
+  const html = HTMLParser.parse(text);
+  return html;
+}
 
 export async function GET(request: Request) {
   // gets the latest game log of the current season

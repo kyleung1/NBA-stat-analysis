@@ -31,7 +31,7 @@ interface scrapeReq {
   team: String;
 }
 
-export async function parseJSON(team: String) {
+async function parseJSON(team: String) {
   const response = await fetch(
     `https://www.basketball-reference.com/teams/${team}/2024/gamelog/`
   );
