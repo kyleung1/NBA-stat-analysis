@@ -23,12 +23,18 @@
     }
   },
   "include": [
+    // "cypress",
+    // "src",
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/lib/training.ts", // this was added in manually
-    "src/lib/training.js"
+    "src/app/app.test.js",
+    "src/app/api/api.test.tsx"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"], //, "cypress", "**/*.cy.tsx", "./cypress.config.ts"
+  "typeAcquisition": {
+    "include": ["jest"]
+  },
+  "types": ["@testing-library/jest-dom"]
 }

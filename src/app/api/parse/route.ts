@@ -41,6 +41,16 @@ async function parseJSON(team: String) {
   return html;
 }
 
+async function fetchLatestGame(TEAM: string) {
+  // returns an array of objects
+  const { data, count } = await supabase
+    .from(TEAM)
+    .select("*", { count: "exact", head: true });
+  if (count) {
+    return count;
+  }
+}
+
 export async function POST(request: Request) {
   // {"team": bos}
   const REQ: scrapeReq = await request.json();
@@ -70,6 +80,10 @@ export async function POST(request: Request) {
   let blk = 0;
   let tov = 0;
   let pf = 0;
+
+  // check if games are new
+  const currentGameSeason = await fetchLatestGame(TEAM);
+
   for (const element of CELLS) {
     if (element.rawAttrs.includes('data-stat="game_season"')) {
       game_season = parseInt(element.innerText);
@@ -144,61 +158,61 @@ export async function POST(request: Request) {
       tov &&
       pf
     ) {
-      console.log(
-        game_season,
-        date_game,
-        game_location,
-        opp_id,
-        game_result,
-        pts,
-        opp_pts,
-        fg,
-        fga,
-        fg_pct,
-        fg3,
-        fg3a,
-        fg3_pct,
-        ft,
-        fta,
-        ft_pct,
-        orb,
-        trb,
-        ast,
-        stl,
-        blk,
-        tov,
-        pf
-      );
-
-      const { error } = await supabase.from(`${TEAM}`).insert({
-        game_season: game_season,
-        date_game: date_game,
-        game_location: game_location,
-        opp_id: opp_id,
-        game_result: game_result,
-        pts: pts,
-        opp_pts: opp_pts,
-        fg: fg,
-        fga: fga,
-        fg_pct: fg_pct,
-        fg3: fg3,
-        fg3a: fg3a,
-        fg3_pct: fg3_pct,
-        ft: ft,
-        fta: fta,
-        ft_pct: ft_pct,
-        orb: orb,
-        trb: trb,
-        ast: ast,
-        stl: stl,
-        blk: blk,
-        tov: tov,
-        pf: pf,
-      });
-      if (error) {
-        console.log(error);
+      if (currentGameSeason && game_season > currentGameSeason) {
+        console.log(
+          game_season,
+          date_game,
+          game_location,
+          opp_id,
+          game_result,
+          pts,
+          opp_pts,
+          fg,
+          fga,
+          fg_pct,
+          fg3,
+          fg3a,
+          fg3_pct,
+          ft,
+          fta,
+          ft_pct,
+          orb,
+          trb,
+          ast,
+          stl,
+          blk,
+          tov,
+          pf
+        );
+        const { error } = await supabase.from(`${TEAM}`).insert({
+          game_season: game_season,
+          date_game: date_game,
+          game_location: game_location,
+          opp_id: opp_id,
+          game_result: game_result,
+          pts: pts,
+          opp_pts: opp_pts,
+          fg: fg,
+          fga: fga,
+          fg_pct: fg_pct,
+          fg3: fg3,
+          fg3a: fg3a,
+          fg3_pct: fg3_pct,
+          ft: ft,
+          fta: fta,
+          ft_pct: ft_pct,
+          orb: orb,
+          trb: trb,
+          ast: ast,
+          stl: stl,
+          blk: blk,
+          tov: tov,
+          pf: pf,
+        });
+        if (error) {
+          console.log(error);
+        }
       }
-
       // reset everything for next game entry
       game_season = 0;
       date_game = "";

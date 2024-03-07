@@ -2,37 +2,7 @@ import { supabase } from "@/lib/supabase";
 import { FeatureArrays } from "@/lib/training";
 import { NextResponse } from "next/server";
 import * as ss from "simple-statistics";
-
-export interface Analysis {
-  mean: number;
-  median: number;
-  mode: number;
-}
-
-export interface ReturnObj {
-  game_season?: Analysis;
-  game_location?: Analysis;
-  opp_id?: Analysis;
-  game_result?: Analysis;
-  pts?: Analysis;
-  opp_pts?: Analysis;
-  fg?: Analysis;
-  fga?: Analysis;
-  fg_pct?: Analysis;
-  fg3?: Analysis;
-  fg3a?: Analysis;
-  fg3_pct?: Analysis;
-  ft?: Analysis;
-  fta?: Analysis;
-  ft_pct?: Analysis;
-  orb?: Analysis;
-  trb?: Analysis;
-  ast?: Analysis;
-  stl?: Analysis;
-  blk?: Analysis;
-  tov?: Analysis;
-  pf?: Analysis;
-}
+import { ReturnObj } from "../../types";
 
 async function fetchData(TEAM: string) {
   // returns an array of objects
@@ -40,9 +10,20 @@ async function fetchData(TEAM: string) {
   if (data) {
     return data;
   } else {
-    console.log("this from fetchData ");
     console.log(error);
   }
+}
+
+// scrapes data of all current games this season
+const HTMLParser = require("node-html-parser");
+async function parseJSON(team: String) {
+  const response = await fetch(
+    `https://www.basketball-reference.com/teams/${team}/2024/gamelog/`
+  );
+  const text = await response.text();
+
+  const html = HTMLParser.parse(text);
+  return html;
 }
 
 export async function GET(request: Request) {
