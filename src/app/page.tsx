@@ -1,7 +1,11 @@
 "use client";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { GameData, ReturnObj } from "./api/types";
-import { getCurrentGameSeason, getTeamNameFull } from "@/functions/helpers";
+import {
+  getCurrentGameSeason,
+  getTeamNameFull,
+  handleSubmit,
+} from "@/functions/helpers";
 
 export const TEAMS = [
   "atl",
@@ -35,38 +39,6 @@ export const TEAMS = [
   "uta",
   "was",
 ];
-
-export async function handleSubmit(
-  e: React.FormEvent<HTMLFormElement>,
-  team: string,
-  setData: Dispatch<SetStateAction<ReturnObj | undefined>>,
-  setFeatures: Dispatch<SetStateAction<string[]>>,
-  setGP: Dispatch<SetStateAction<number>>
-) {
-  e.preventDefault();
-  await fetch(`/api/parse/`, {
-    method: "POST",
-    body: JSON.stringify({
-      team: team,
-    }),
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-    },
-  });
-
-  const res = await fetch(`/api/analysis/${team}`);
-  const DATA: ReturnObj = await res.json();
-  const temp = [];
-  for (const key in DATA) {
-    temp.push(key);
-  }
-  const GAMES_PLAYED = parseInt(await getCurrentGameSeason(team));
-
-  setData(DATA);
-  setFeatures(temp);
-  setGP(GAMES_PLAYED);
-  return DATA;
-}
 
 export default function Home() {
   const [team, setTeam] = useState<string>("");

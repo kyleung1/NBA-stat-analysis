@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import { supabase } from "@/lib/supabase";
-import { GameData } from "@/app/api/types";
+import { GameData, ReturnObj } from "@/app/api/types";
 
 export function getTeamNameFull(
   team: string,
@@ -95,4 +95,36 @@ export async function getCurrentGameSeason(team: string) {
   const data: GameData[] = await res.json();
   const GAME_SEASON = data[data.length - 1].game_season;
   return GAME_SEASON;
+}
+
+export async function handleSubmit(
+  e: React.FormEvent<HTMLFormElement>,
+  team: string,
+  setData: Dispatch<SetStateAction<ReturnObj | undefined>>,
+  setFeatures: Dispatch<SetStateAction<string[]>>,
+  setGP: Dispatch<SetStateAction<number>>
+) {
+  e.preventDefault();
+  await fetch(`/api/parse/`, {
+    method: "POST",
+    body: JSON.stringify({
+      team: team,
+    }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+  });
+
+  const res = await fetch(`/api/analysis/${team}`);
+  const DATA: ReturnObj = await res.json();
+  const temp = [];
+  for (const key in DATA) {
+    temp.push(key);
+  }
+  const GAMES_PLAYED = parseInt(await getCurrentGameSeason(team));
+
+  setData(DATA);
+  setFeatures(temp);
+  setGP(GAMES_PLAYED);
+  return DATA;
 }
