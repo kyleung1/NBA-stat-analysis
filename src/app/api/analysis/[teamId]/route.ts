@@ -1,30 +1,8 @@
-import { supabase } from "@/lib/supabase";
 import { FeatureArrays } from "@/lib/training";
 import { NextResponse } from "next/server";
 import * as ss from "simple-statistics";
 import { ReturnObj } from "../../types";
-
-async function fetchData(TEAM: string) {
-  // returns an array of objects
-  const { data, error } = await supabase.from(TEAM).select("*");
-  if (data) {
-    return data;
-  } else {
-    console.log(error);
-  }
-}
-
-// scrapes data of all current games this season
-const HTMLParser = require("node-html-parser");
-async function parseJSON(team: String) {
-  const response = await fetch(
-    `https://www.basketball-reference.com/teams/${team}/2024/gamelog/`
-  );
-  const text = await response.text();
-
-  const html = HTMLParser.parse(text);
-  return html;
-}
+import { fetchData } from "@/functions/helpers";
 
 export async function GET(request: Request) {
   const url = request.url;

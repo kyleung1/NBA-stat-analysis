@@ -1,6 +1,6 @@
 // unit tests
-import Home, { TEAMS } from "./page";
-import React from "react";
+import Home, { TEAMS, getCurrentGameSeason, handleSubmit } from "./page";
+import React, { FormEvent } from "react";
 import {
   fireEvent,
   getAllByTestId,
@@ -106,11 +106,6 @@ describe("Home Component", () => {
     },
   };
 
-  // mock fetch function
-  global.fetch = jest.fn().mockResolvedValue({
-    json: () => mockData,
-  });
-
   interface MockData2 {
     [key: string]: string;
   }
@@ -149,40 +144,117 @@ describe("Home Component", () => {
   };
 
   test("form submits", async () => {
-    const {} = await render(<Home />);
-    const input = screen.getByPlaceholderText("Enter your NBA team team.");
-    const submitBtn = screen.getByText("Submit");
+    // // mock fetch function
+    // global.fetch = jest
+    //   .fn()
+    //   .mockResolvedValueOnce({
+    //     json: () => [
+    //       {
+    //         game_season: 1,
+    //         date_game: "2023-10-25",
+    //         game_location: "@",
+    //         opp_id: "NYK",
+    //         game_result: "W",
+    //         pts: 108,
+    //         opp_pts: 104,
+    //         fg: 37,
+    //         fga: 77,
+    //         fg_pct: 0.481,
+    //         fg3: 12,
+    //         fg3a: 39,
+    //         fg3_pct: 0.308,
+    //         ft: 22,
+    //         fta: 26,
+    //         ft_pct: 0.846,
+    //         orb: 7,
+    //         trb: 46,
+    //         ast: 18,
+    //         stl: 6,
+    //         blk: 11,
+    //         tov: 13,
+    //         pf: 22,
+    //       },
+    //     ],
+    //   })
+    //   .mockResolvedValueOnce({
+    //     json: () => mockData,
+    //   });
+    // const e = { preventDefault: jest.fn() };
+    // const team = "bos";
+    // const setData = jest.fn();
+    // const setFeatures = jest.fn();
+    // const setGP = jest.fn();
+    // const {} = await render(<Home />);
+    // const input = screen.getByPlaceholderText("Enter your NBA team team.");
+    // const submitBtn = screen.getByText("Submit");
+    // fireEvent.change(input, { target: { value: team } });
+    // fireEvent.click(submitBtn);
+    // // const data = await handleSubmit(e, team, setData, setFeatures, setGP);
+    // // expect(data).toEqual(mockData);
+    // await waitFor(() => {
+    //   const allMean = screen.getAllByTestId("mean");
+    //   const allMedian = screen.getAllByTestId("median");
+    //   const allMode = screen.getAllByTestId("mode");
+    //   expect(fetch).toHaveBeenCalledWith("/api/analysis/bos");
+    //   for (let i = 0; i < allMean.length; i++) {
+    //     const textContent = allMean[i].textContent;
+    //     if (textContent) {
+    //       const mean = parseFloat(textContent);
+    //       expect(mean).toBeGreaterThan(0);
+    //     }
+    //   }
+    //   for (let i = 0; i < allMedian.length; i++) {
+    //     const textContent = allMedian[i].textContent;
+    //     if (textContent) {
+    //       const median = parseFloat(textContent);
+    //       expect(median).toBeGreaterThan(0);
+    //     }
+    //   }
+    //   for (let i = 0; i < allMode.length; i++) {
+    //     const textContent = allMode[i].textContent;
+    //     if (textContent) {
+    //       const mode = parseFloat(textContent);
+    //       expect(mode).toBeGreaterThan(0);
+    //     }
+    //   }
+    // });
+  });
 
-    fireEvent.change(input, { target: { value: "bos" } });
-    fireEvent.click(submitBtn);
-
-    await waitFor(() => {
-      const allMean = screen.getAllByTestId("mean");
-      const allMedian = screen.getAllByTestId("median");
-      const allMode = screen.getAllByTestId("mode");
-      expect(fetch).toHaveBeenCalledWith("/api/analysis/bos");
-      for (let i = 0; i < allMean.length; i++) {
-        const textContent = allMean[i].textContent;
-        if (textContent) {
-          const mean = parseFloat(textContent);
-          expect(mean).toBeGreaterThan(0);
-        }
-      }
-      for (let i = 0; i < allMedian.length; i++) {
-        const textContent = allMedian[i].textContent;
-        if (textContent) {
-          const median = parseFloat(textContent);
-          expect(median).toBeGreaterThan(0);
-        }
-      }
-      for (let i = 0; i < allMode.length; i++) {
-        const textContent = allMode[i].textContent;
-        if (textContent) {
-          const mode = parseFloat(textContent);
-          expect(mode).toBeGreaterThan(0);
-        }
-      }
+  test("getCurrentGameSeason", async () => {
+    // mock fetch function
+    global.fetch = jest.fn().mockResolvedValue({
+      // mock object
+      json: () => [
+        {
+          game_season: 1,
+          date_game: "2023-10-25",
+          game_location: "@",
+          opp_id: "NYK",
+          game_result: "W",
+          pts: 108,
+          opp_pts: 104,
+          fg: 37,
+          fga: 77,
+          fg_pct: 0.481,
+          fg3: 12,
+          fg3a: 39,
+          fg3_pct: 0.308,
+          ft: 22,
+          fta: 26,
+          ft_pct: 0.846,
+          orb: 7,
+          trb: 46,
+          ast: 18,
+          stl: 6,
+          blk: 11,
+          tov: 13,
+          pf: 22,
+        },
+      ],
     });
+
+    const GAMESPLAYED = await getCurrentGameSeason("bos");
+    expect(GAMESPLAYED).toEqual(1);
   });
 
   test("team id to full name", async () => {

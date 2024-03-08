@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
+import { supabase } from "@/lib/supabase";
 
 export function getTeamNameFull(
   team: string,
@@ -65,4 +66,25 @@ export function getTeamNameFull(
   } else if (team === "was") {
     setTN("Washington Wizards");
   }
+}
+
+export async function fetchData(TEAM: string) {
+  // returns an array of objects
+  const { data, error } = await supabase.from(TEAM).select("*");
+  if (data) {
+    return data;
+  } else {
+    console.log(error);
+  }
+}
+
+const HTMLParser = require("node-html-parser");
+export async function parseJSON(team: String) {
+  const response = await fetch(
+    `https://www.basketball-reference.com/teams/${team}/2024/gamelog/`
+  );
+  const text = await response.text();
+
+  const html = HTMLParser.parse(text);
+  return html;
 }

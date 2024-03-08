@@ -1,8 +1,7 @@
+import { parseJSON } from "@/functions/helpers";
 import { supabase } from "@/lib/supabase";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
-
-const HTMLParser = require("node-html-parser");
 
 export interface HTMLElement {
   parentNode: HTMLElement | null;
@@ -29,16 +28,6 @@ interface DOMTokenList {
 
 interface scrapeReq {
   team: String;
-}
-
-async function parseJSON(team: String) {
-  const response = await fetch(
-    `https://www.basketball-reference.com/teams/${team}/2024/gamelog/`
-  );
-  const text = await response.text();
-
-  const html = HTMLParser.parse(text);
-  return html;
 }
 
 async function fetchLatestGame(TEAM: string) {

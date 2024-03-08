@@ -1,6 +1,6 @@
 "use client";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { ReturnObj } from "./api/types";
+import { GameData, ReturnObj } from "./api/types";
 import { getTeamNameFull } from "@/functions/helpers";
 
 export const TEAMS = [
@@ -36,11 +36,12 @@ export const TEAMS = [
   "was",
 ];
 
-async function handleSubmit(
+export async function handleSubmit(
   e: React.FormEvent<HTMLFormElement>,
   team: string,
   setData: Dispatch<SetStateAction<ReturnObj | undefined>>,
-  setFeatures: Dispatch<SetStateAction<string[]>>
+  setFeatures: Dispatch<SetStateAction<string[]>>,
+  setGP: Dispatch<SetStateAction<number>>
 ) {
   e.preventDefault();
   await fetch(`/api/parse/`, {
@@ -52,15 +53,26 @@ async function handleSubmit(
       "Content-type": "application/json; charset=UTF-8",
     },
   });
+
   const res = await fetch(`/api/analysis/${team}`);
   const DATA: ReturnObj = await res.json();
   const temp = [];
   for (const key in DATA) {
     temp.push(key);
   }
+  const GAMES_PLAYED = parseInt(await getCurrentGameSeason(team));
+
   setData(DATA);
   setFeatures(temp);
+  setGP(GAMES_PLAYED);
   return DATA;
+}
+
+export async function getCurrentGameSeason(team: string) {
+  const res = await fetch(`/api/parse/${team}`);
+  const data: GameData[] = await res.json();
+  const GAME_SEASON = data[data.length - 1].game_season;
+  return GAME_SEASON;
 }
 
 export default function Home() {
@@ -68,6 +80,7 @@ export default function Home() {
   const [data, setData] = useState<ReturnObj>();
   const [features, setFeatures] = useState<string[]>([]);
   const [teamName, setTN] = useState<string>("");
+  const [games_played, setGP] = useState<number>(0);
 
   useEffect(() => {
     getTeamNameFull(team, setTN);
@@ -101,7 +114,7 @@ export default function Home() {
       <form
         className="my-5"
         onSubmit={(event) => {
-          handleSubmit(event, team, setData, setFeatures);
+          handleSubmit(event, team, setData, setFeatures, setGP);
         }}
       >
         <input
@@ -117,6 +130,13 @@ export default function Home() {
         </button>
       </form>
       <h2 data-testid="teamName">{teamName}</h2>
+      {data && (
+        <h2>
+          Over <span className="games-played">{games_played}</span> games played
+          this season.
+        </h2>
+      )}
+
       {features.map((feature, index) => (
         <div key={index} className="w-3/4">
           <div>{feature}</div>
