@@ -21,5 +21,11 @@ jobs:
       - name: run jest tests
         run: npm run test
 
+      - name: start dev server
+        run: npm run dev
+
       - name: run cypress tests
         run: npx cypress run
+
+      - name: close dev server
+        run:
