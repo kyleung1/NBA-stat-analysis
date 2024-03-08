@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import { supabase } from "@/lib/supabase";
+import { GameData } from "@/app/api/types";
 
 export function getTeamNameFull(
   team: string,
@@ -87,4 +88,11 @@ export async function parseJSON(team: String) {
 
   const html = HTMLParser.parse(text);
   return html;
+}
+
+export async function getCurrentGameSeason(team: string) {
+  const res = await fetch(`/api/parse/${team}`);
+  const data: GameData[] = await res.json();
+  const GAME_SEASON = data[data.length - 1].game_season;
+  return GAME_SEASON;
 }

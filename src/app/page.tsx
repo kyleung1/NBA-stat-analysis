@@ -1,7 +1,7 @@
 "use client";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { GameData, ReturnObj } from "./api/types";
-import { getTeamNameFull } from "@/functions/helpers";
+import { getCurrentGameSeason, getTeamNameFull } from "@/functions/helpers";
 
 export const TEAMS = [
   "atl",
@@ -66,13 +66,6 @@ export async function handleSubmit(
   setFeatures(temp);
   setGP(GAMES_PLAYED);
   return DATA;
-}
-
-export async function getCurrentGameSeason(team: string) {
-  const res = await fetch(`/api/parse/${team}`);
-  const data: GameData[] = await res.json();
-  const GAME_SEASON = data[data.length - 1].game_season;
-  return GAME_SEASON;
 }
 
 export default function Home() {
