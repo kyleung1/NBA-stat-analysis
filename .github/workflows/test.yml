@@ -7,18 +7,19 @@ jobs:
     name: test code base
     runs-on: ubuntu-latest
     steps:
-        - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Checkout code
+      uses: actions/checkout@v4
 
-        - name: setup node
-        uses: actions/setup-node@v4
-        with: node-version: "18.17.0"
+      - name: setup node
+      uses: actions/setup-node@v4
+        with: 
+          node-version: "18.17.0"
 
-        - name: install dependencies
-        run: npm install
+      - name: install dependencies
+      run: npm ci
 
-        - name: run jest tests
-        run: npm test
+      - name: run jest tests
+      run: npm run test
 
-        - name: run cypress tests
-        run: npx cypress run
+      - name: run cypress tests
+      run: npx cypress run
