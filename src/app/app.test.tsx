@@ -1,5 +1,5 @@
 // unit tests
-import Home, { TEAMS, getCurrentGameSeason, handleSubmit } from "./page";
+import { TEAMS, getCurrentGameSeason, handleSubmit } from "@/functions/helpers";
 import React, { FormEvent } from "react";
 import {
   fireEvent,
@@ -11,6 +11,7 @@ import {
 } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { screen } from "@testing-library/dom";
+import Home from "./page";
 
 describe("Home Component", () => {
   const mockData = {

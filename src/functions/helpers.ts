@@ -128,3 +128,36 @@ export async function handleSubmit(
   setGP(GAMES_PLAYED);
   return DATA;
 }
+
+export const TEAMS = [
+  "atl",
+  "bos",
+  "brk",
+  "chi",
+  "cho",
+  "cle",
+  "dal",
+  "den",
+  "det",
+  "gsw",
+  "hou",
+  "ind",
+  "lac",
+  "lal",
+  "mem",
+  "mia",
+  "mil",
+  "min",
+  "nop",
+  "nyk",
+  "okc",
+  "orl",
+  "phi",
+  "pho",
+  "por",
+  "sac",
+  "sas",
+  "tor",
+  "uta",
+  "was",
+];

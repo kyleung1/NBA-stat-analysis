@@ -2,43 +2,11 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { GameData, ReturnObj } from "./api/types";
 import {
+  TEAMS,
   getCurrentGameSeason,
   getTeamNameFull,
   handleSubmit,
 } from "@/functions/helpers";
-
-export const TEAMS = [
-  "atl",
-  "bos",
-  "brk",
-  "chi",
-  "cho",
-  "cle",
-  "dal",
-  "den",
-  "det",
-  "gsw",
-  "hou",
-  "ind",
-  "lac",
-  "lal",
-  "mem",
-  "mia",
-  "mil",
-  "min",
-  "nop",
-  "nyk",
-  "okc",
-  "orl",
-  "phi",
-  "pho",
-  "por",
-  "sac",
-  "sas",
-  "tor",
-  "uta",
-  "was",
-];
 
 export default function Home() {
   const [team, setTeam] = useState<string>("");
